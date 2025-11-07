@@ -1,0 +1,73 @@
+<?php
+require_once __DIR__ . '/includes/config.php';
+
+$supportedLangs = SUPPORTED_LANGS;
+$defaultLang = DEFAULT_LANG;
+
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
+$path = rtrim($uri, '/') ?: '/';
+
+// Serve existing files (assets, php endpoints) directly.
+$absolutePath = realpath(__DIR__ . $uri);
+if ($uri !== '/' && $absolutePath && is_file($absolutePath)) {
+    return false;
+}
+
+parse_str($_SERVER['QUERY_STRING'] ?? '', $queryParams);
+$segments = array_values(array_filter(explode('/', $path)));
+
+if (!$segments) {
+    header("Location: /{$defaultLang}/", true, 302);
+    exit;
+}
+
+$lang = strtolower($segments[0]);
+
+if (!in_array($lang, $supportedLangs, true)) {
+    // Let unknown static files (e.g., favicon.ico) fall through to default handling.
+    if (str_contains($lang, '.')) {
+        return false;
+    }
+
+    $suffix = implode('/', $segments);
+    $suffix = $suffix ? '/' . $suffix : '';
+    header("Location: /{$defaultLang}{$suffix}", true, 302);
+    exit;
+}
+
+$rest = array_slice($segments, 1);
+$script = null;
+$params = ['lang' => $lang];
+
+switch ($rest[0] ?? '') {
+    case '':
+        $script = 'index.php';
+        break;
+    case 'portfolio':
+        if (!empty($rest[1])) {
+            $script = 'case-study.php';
+            $params['slug'] = $rest[1];
+        } else {
+            $script = 'portfolio.php';
+        }
+        break;
+    case 'about':
+        $script = 'about.php';
+        break;
+    case 'services':
+        $script = 'services.php';
+        break;
+    case 'contact':
+        $script = 'contact.php';
+        break;
+    default:
+        http_response_code(404);
+        echo 'Page not found';
+        return true;
+}
+
+$_GET = array_merge($queryParams, $params);
+$_REQUEST = array_merge($_REQUEST, $_GET);
+
+require __DIR__ . '/' . $script;
+return true;

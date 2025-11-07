@@ -1,0 +1,29 @@
+﻿RewriteEngine On
+RewriteBase /
+
+RewriteRule ^(tr|en|de)/?$ index.php?lang=$1 [L,QSA]
+RewriteRule ^(tr|en|de)/portfolio/?$ portfolio.php?lang=$1 [L,QSA]
+RewriteRule ^(tr|en|de)/portfolio/([a-z0-9-]+)/?$ case-study.php?lang=$1&slug=$2 [L,QSA]
+RewriteRule ^(tr|en|de)/about/?$ about.php?lang=$1 [L,QSA]
+RewriteRule ^(tr|en|de)/services/?$ services.php?lang=$1 [L,QSA]
+RewriteRule ^(tr|en|de)/contact/?$ contact.php?lang=$1 [L,QSA]
+
+RewriteCond %{REQUEST_URI} !^/(tr|en|de)
+RewriteRule ^(.*)$ /en/$1 [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+</IfModule>

@@ -1,0 +1,13 @@
+# OS junk
+Thumbs.db
+.DS_Store
+
+# IDE/editor settings
+.vscode/
+.idea/
+
+# Build / deploy artifacts
+.ftp-deploy-sync-state.json
+
+# Local notes
+temp_portfolio_numbered.txt
