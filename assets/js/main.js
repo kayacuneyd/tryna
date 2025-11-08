@@ -83,21 +83,11 @@
                 event.stopPropagation();
                 toggleMobileMenu();
             });
-            mobileMenuBtn.addEventListener('touchstart', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                toggleMobileMenu();
-            });
         }
 
         if (langButton) {
             langButton.setAttribute('aria-expanded', 'false');
             langButton.addEventListener('click', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                toggleLangDropdown();
-            });
-            langButton.addEventListener('touchstart', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
                 toggleLangDropdown();

@@ -30,9 +30,9 @@
             </div>
         </div>
         <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm tracking-wide">
-            <p>
-                <?php printf(t('footer.rights'), date('Y'), t('brand.name')); ?>
-            </p>
+            <span>
+             developed by <a href="https://kayacuneyt.com" target="_blank">Cüneyt Kaya</a>   <?php printf(t('footer.rights'), date('Y'), t('brand.name')); ?>
+            </span>
         </div>
     </div>
 </footer>
