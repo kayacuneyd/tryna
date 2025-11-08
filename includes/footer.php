@@ -17,7 +17,7 @@
             <div>
                 <h3 class="text-xl font-bold mb-4"><?php echo t('footer.follow'); ?></h3>
                 <div class="flex space-x-4">
-                    <a href="https://www.instagram.com/enesturkoglu" target="_blank" class="hover:text-[#5E9387]">
+                    <a href="https://www.instagram.com/turkogluenes" target="_blank" class="hover:text-[#5E9387]">
                         <span class="text-sm"><?php echo t('common.instagram'); ?></span>
                     </a>
                     <a href="https://www.pexels.com/@turkogluenes" target="_blank" class="hover:text-[#5E9387]">
