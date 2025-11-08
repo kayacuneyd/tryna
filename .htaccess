@@ -1,6 +1,9 @@
 ﻿RewriteEngine On
 RewriteBase /
 
+# Handle API requests directly
+RewriteRule ^api/(.*)$ /api/$1 [L,QSA]
+
 RewriteRule ^(tr|en|de)/(assets/.*)$ /$2 [L,QSA]
 
 RewriteRule ^(tr|en|de)/?$ index.php?lang=$1 [L,QSA]

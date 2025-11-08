@@ -4,6 +4,9 @@ require_once __DIR__ . '/../includes/config.php';
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
+// Debug: Log the request for troubleshooting
+error_log("Pexels API request: " . ($_SERVER['REQUEST_URI'] ?? 'direct-call'));
+
 $page = max(1, (int) ($_GET['page'] ?? 1));
 $per_page = min(80, max(1, (int) ($_GET['per_page'] ?? 15)));
 $category = isset($_GET['category']) ? preg_replace('/[^a-z0-9-]/i', '', $_GET['category']) : 'all';
@@ -16,10 +19,14 @@ $baseHeaders = [
 
 if ($collection_id) {
     $url = "https://api.pexels.com/v1/collections/{$collection_id}?per_page={$per_page}&page={$page}";
+    error_log("Fetching from Pexels collection URL: " . $url);
     $raw = pexels_request($url, $baseHeaders);
     if (!$raw['ok']) {
+        error_log("Pexels collection request failed: " . json_encode($raw));
         respond_with_error($raw['status'], 'Failed to fetch photos from Pexels collection', [
             'details' => $raw['error'] ?: null,
+            'url' => $url,
+            'collection_id' => $collection_id
         ]);
     }
 

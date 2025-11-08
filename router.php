@@ -7,6 +7,37 @@ $defaultLang = DEFAULT_LANG;
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
 $path = rtrim($uri, '/') ?: '/';
 
+// Handle API requests first
+if (strpos($path, '/api/') === 0) {
+    $apiFile = __DIR__ . $uri;
+    error_log("API Request - Path: $path, File: $apiFile, Exists: " . (file_exists($apiFile) ? 'yes' : 'no'));
+    
+    if (file_exists($apiFile)) {
+        require $apiFile;
+        return true;
+    }
+    
+    http_response_code(404);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error' => 'API endpoint not found',
+        'path' => $path,
+        'file' => $apiFile,
+        'debug' => true
+    ]);
+    return true;
+}
+
+// Handle assets and other static files
+if (preg_match('/\.(css|js|png|jpg|jpeg|gif|webp|svg|ico|woff|woff2|ttf|pdf)$/i', $path)) {
+    $filePath = __DIR__ . $uri;
+    if (file_exists($filePath)) {
+        return false; // Let PHP serve the file
+    }
+    http_response_code(404);
+    return true;
+}
+
 // Serve existing files (assets, php endpoints) directly.
 $absolutePath = realpath(__DIR__ . $uri);
 if ($uri !== '/' && $absolutePath && is_file($absolutePath)) {
