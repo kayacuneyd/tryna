@@ -1,6 +1,8 @@
 ﻿RewriteEngine On
 RewriteBase /
 
+RewriteRule ^(tr|en|de)/(assets/.*)$ /$2 [L,QSA]
+
 RewriteRule ^(tr|en|de)/?$ index.php?lang=$1 [L,QSA]
 RewriteRule ^(tr|en|de)/portfolio/?$ portfolio.php?lang=$1 [L,QSA]
 RewriteRule ^(tr|en|de)/portfolio/([a-z0-9-]+)/?$ case-study.php?lang=$1&slug=$2 [L,QSA]
