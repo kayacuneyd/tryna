@@ -42,11 +42,19 @@ const initUI = () => {
         });
     }
 
-    document.addEventListener('click', () => {
-        if (langDropdown) {
+    document.addEventListener('click', (event) => {
+        const target = event.target;
+
+        if (langDropdown && langButton && !langDropdown.contains(target) && !langButton.contains(target)) {
             langDropdown.classList.add('hidden');
         }
-        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+        if (
+            mobileMenu &&
+            mobileMenuBtn &&
+            !mobileMenu.contains(target) &&
+            !mobileMenuBtn.contains(target) &&
+            !mobileMenu.classList.contains('hidden')
+        ) {
             closeMobileMenu();
         }
     });
