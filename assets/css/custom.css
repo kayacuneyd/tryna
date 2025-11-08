@@ -35,3 +35,66 @@ a:focus-visible {
 .shadow-soft {
   box-shadow: 0 25px 40px -20px rgba(12, 16, 20, 0.7);
 }
+
+/* Service Cards Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.service-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(94, 147, 135, 0.8), transparent);
+  transition: left 0.5s ease-in-out;
+}
+
+.service-card:hover::before {
+  left: 100%;
+}
+
+.service-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(94, 147, 135, 0.05), rgba(123, 179, 168, 0.05));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.service-card:hover::after {
+  opacity: 1;
+}
+
+/* Smooth transitions for all service card elements */
+.service-card * {
+  transition: all 0.3s ease;
+}
+
+/* Staggered animation for service cards */
+.service-card:nth-child(1) { animation-delay: 0ms; }
+.service-card:nth-child(2) { animation-delay: 150ms; }
+.service-card:nth-child(3) { animation-delay: 300ms; }

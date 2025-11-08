@@ -31,7 +31,7 @@
         </div>
         <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm tracking-wide">
             <span>
-             developed by <a href="https://kayacuneyt.com" target="_blank">Cüneyt Kaya</a>   <?php printf(t('footer.rights'), date('Y'), t('brand.name')); ?>
+             developed by <a href="https://kayacuneyt.com" target="_blank" class="text-[#5E9387] hover:text-[#7BB3A8] transition-colors duration-300 font-medium underline decoration-dotted underline-offset-2 hover:underline-offset-4">Cüneyt Kaya</a>   <?php printf(t('footer.rights'), date('Y'), t('brand.name')); ?>
             </span>
         </div>
     </div>

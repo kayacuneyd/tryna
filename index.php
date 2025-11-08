@@ -34,10 +34,20 @@ include __DIR__ . '/includes/header.php';
     </section>
 
     <section class="container mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <?php foreach (t('services.list') as $service): ?>
-            <div class="bg-white p-8 rounded-2xl shadow-soft border border-[#D8C9B1]/40">
-                <p class="text-sm uppercase tracking-[0.3em] text-[#5E738A] mb-4"><?php echo t('services.title'); ?></p>
-                <h3 class="text-2xl font-semibold text-[#1C1E21]"><?php echo $service; ?></h3>
+        <?php foreach (t('services.list') as $index => $service): ?>
+            <div class="service-card group bg-white p-8 rounded-2xl shadow-soft border border-[#D8C9B1]/40 
+                        transform transition-all duration-500 ease-out cursor-pointer
+                        hover:scale-105 hover:shadow-xl hover:border-[#5E9387]/60 hover:-translate-y-3
+                        opacity-0 translate-y-8 animate-fade-in-up"
+                 style="animation-delay: <?php echo $index * 150; ?>ms;">
+                <p class="text-sm uppercase tracking-[0.3em] text-[#5E738A] mb-4 
+                         transition-all duration-300 group-hover:text-[#5E9387] group-hover:tracking-[0.4em]">
+                    <?php echo t('services.title'); ?>
+                </p>
+                <h3 class="text-2xl font-semibold text-[#1C1E21] 
+                          transition-all duration-300 group-hover:text-[#5E9387] group-hover:scale-105 origin-left">
+                    <?php echo $service; ?>
+                </h3>
             </div>
         <?php endforeach; ?>
     </section>
