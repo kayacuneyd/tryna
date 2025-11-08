@@ -2,92 +2,106 @@
 const initUI = () => {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
-
-    const closeMobileMenu = () => {
-        if (!mobileMenu || !mobileMenuBtn) return;
-        mobileMenu.classList.add('hidden');
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
-    };
-
-    const closeLangDropdown = () => {
-        if (!langDropdown || !langButton) return;
-        langDropdown.classList.add('hidden');
-        langButton.setAttribute('aria-expanded', 'false');
-    };
-
-    const buildEventPath = (event) => {
-        if (typeof event.composedPath === 'function') {
-            return event.composedPath();
-        }
-
-        const path = [];
-        let node = event.target;
-        while (node) {
-            path.push(node);
-            node = node.parentNode;
-        }
-        path.push(window);
-        return path;
-    };
-
-    const isEventInside = (event, elements) => {
-        const path = buildEventPath(event);
-        return elements.some((element) => element && path.includes(element));
-    };
-
-    if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
-
-        mobileMenuBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            const isHidden = mobileMenu.classList.toggle('hidden');
-            mobileMenuBtn.setAttribute('aria-expanded', (!isHidden).toString());
-            if (!isHidden) {
-                closeLangDropdown();
-            }
-        });
-
-        if (typeof window.matchMedia === 'function') {
-            const desktopQuery = window.matchMedia('(min-width: 768px)');
-            const handleDesktopChange = (event) => {
-                if (event.matches) {
-                    closeMobileMenu();
-                }
-            };
-
-            // Immediately sync in case the script loads after a resize.
-            handleDesktopChange(desktopQuery);
-            desktopQuery.addEventListener('change', handleDesktopChange);
-        }
-    }
-
     const langButton = document.getElementById('langButton');
     const langDropdown = document.getElementById('langDropdown');
 
-    if (langButton && langDropdown) {
-        langButton.setAttribute('aria-expanded', 'false');
-        langButton.addEventListener('click', (event) => {
-            event.stopPropagation();
-            const isHidden = langDropdown.classList.toggle('hidden');
-            langButton.setAttribute('aria-expanded', (!isHidden).toString());
-            if (!isHidden) {
-                closeMobileMenu();
-            }
-        });
-    }
-
-    const handleGlobalEvent = (event) => {
-        if (langDropdown && langButton && !isEventInside(event, [langDropdown, langButton])) {
-            closeLangDropdown();
-        }
-
-        if (mobileMenu && mobileMenuBtn && !isEventInside(event, [mobileMenu, mobileMenuBtn])) {
-            closeMobileMenu();
+    const toggleHidden = (element, force) => {
+        if (!element) return;
+        if (typeof force === 'boolean') {
+            element.classList.toggle('hidden', force);
+        } else {
+            element.classList.toggle('hidden');
         }
     };
 
-    document.addEventListener('click', handleGlobalEvent);
-    document.addEventListener('touchstart', handleGlobalEvent);
+    const setExpanded = (trigger, state) => {
+        if (!trigger) return;
+        trigger.setAttribute('aria-expanded', state ? 'true' : 'false');
+    };
+
+    const isInside = (target, ...elements) => {
+        return elements.some((element) => element && element.contains(target));
+    };
+
+    const closeMobileMenu = () => {
+        toggleHidden(mobileMenu, true);
+        setExpanded(mobileMenuBtn, false);
+    };
+
+    const closeLangDropdown = () => {
+        toggleHidden(langDropdown, true);
+        setExpanded(langButton, false);
+    };
+
+    const openMobileMenu = () => {
+        toggleHidden(mobileMenu, false);
+        setExpanded(mobileMenuBtn, true);
+        closeLangDropdown();
+    };
+
+    const openLangDropdown = () => {
+        toggleHidden(langDropdown, false);
+        setExpanded(langButton, true);
+        closeMobileMenu();
+    };
+
+    const toggleMobileMenu = () => {
+        if (!mobileMenu || !mobileMenuBtn) return;
+        const isOpen = !mobileMenu.classList.contains('hidden');
+        if (isOpen) {
+            closeMobileMenu();
+        } else {
+            openMobileMenu();
+        }
+    };
+
+    const toggleLangDropdown = () => {
+        if (!langDropdown || !langButton) return;
+        const isOpen = !langDropdown.classList.contains('hidden');
+        if (isOpen) {
+            closeLangDropdown();
+        } else {
+            openLangDropdown();
+        }
+    };
+
+    if (mobileMenuBtn) {
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        mobileMenuBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            toggleMobileMenu();
+        });
+    }
+
+    if (langButton) {
+        langButton.setAttribute('aria-expanded', 'false');
+        langButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            toggleLangDropdown();
+        });
+    }
+
+    if (mobileMenu) {
+        mobileMenu.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+    }
+
+    const handleDocumentClick = (event) => {
+        const target = event.target;
+
+        if (mobileMenu && mobileMenuBtn && !isInside(target, mobileMenu, mobileMenuBtn)) {
+            closeMobileMenu();
+        }
+
+        if (langDropdown && langButton && !isInside(target, langDropdown, langButton)) {
+            closeLangDropdown();
+        }
+    };
+
+    document.addEventListener('click', handleDocumentClick);
 
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
@@ -95,6 +109,16 @@ const initUI = () => {
             closeMobileMenu();
         }
     });
+
+    window.addEventListener(
+        'resize',
+        () => {
+            if (window.innerWidth >= 768) {
+                closeMobileMenu();
+            }
+        },
+        { passive: true },
+    );
 
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.addEventListener('click', (event) => {
