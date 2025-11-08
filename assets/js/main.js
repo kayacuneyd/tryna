@@ -9,6 +9,32 @@ const initUI = () => {
         mobileMenuBtn.setAttribute('aria-expanded', 'false');
     };
 
+    const closeLangDropdown = () => {
+        if (!langDropdown || !langButton) return;
+        langDropdown.classList.add('hidden');
+        langButton.setAttribute('aria-expanded', 'false');
+    };
+
+    const buildEventPath = (event) => {
+        if (typeof event.composedPath === 'function') {
+            return event.composedPath();
+        }
+
+        const path = [];
+        let node = event.target;
+        while (node) {
+            path.push(node);
+            node = node.parentNode;
+        }
+        path.push(window);
+        return path;
+    };
+
+    const isEventInside = (event, elements) => {
+        const path = buildEventPath(event);
+        return elements.some((element) => element && path.includes(element));
+    };
+
     if (mobileMenuBtn && mobileMenu) {
         mobileMenuBtn.setAttribute('aria-expanded', 'false');
 
@@ -16,6 +42,9 @@ const initUI = () => {
             event.stopPropagation();
             const isHidden = mobileMenu.classList.toggle('hidden');
             mobileMenuBtn.setAttribute('aria-expanded', (!isHidden).toString());
+            if (!isHidden) {
+                closeLangDropdown();
+            }
         });
 
         if (typeof window.matchMedia === 'function') {
@@ -36,25 +65,33 @@ const initUI = () => {
     const langDropdown = document.getElementById('langDropdown');
 
     if (langButton && langDropdown) {
+        langButton.setAttribute('aria-expanded', 'false');
         langButton.addEventListener('click', (event) => {
             event.stopPropagation();
-            langDropdown.classList.toggle('hidden');
+            const isHidden = langDropdown.classList.toggle('hidden');
+            langButton.setAttribute('aria-expanded', (!isHidden).toString());
+            if (!isHidden) {
+                closeMobileMenu();
+            }
         });
     }
 
-    document.addEventListener('click', (event) => {
-        const target = event.target;
-
-        if (langDropdown && langButton && !langDropdown.contains(target) && !langButton.contains(target)) {
-            langDropdown.classList.add('hidden');
+    const handleGlobalEvent = (event) => {
+        if (langDropdown && langButton && !isEventInside(event, [langDropdown, langButton])) {
+            closeLangDropdown();
         }
-        if (
-            mobileMenu &&
-            mobileMenuBtn &&
-            !mobileMenu.contains(target) &&
-            !mobileMenuBtn.contains(target) &&
-            !mobileMenu.classList.contains('hidden')
-        ) {
+
+        if (mobileMenu && mobileMenuBtn && !isEventInside(event, [mobileMenu, mobileMenuBtn])) {
+            closeMobileMenu();
+        }
+    };
+
+    document.addEventListener('click', handleGlobalEvent);
+    document.addEventListener('touchstart', handleGlobalEvent);
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeLangDropdown();
             closeMobileMenu();
         }
     });
