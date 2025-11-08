@@ -16,6 +16,46 @@ if ($uri !== '/' && $absolutePath && is_file($absolutePath)) {
 parse_str($_SERVER['QUERY_STRING'] ?? '', $queryParams);
 $segments = array_values(array_filter(explode('/', $path)));
 
+// Allow language-prefixed asset requests like /en/assets/* to resolve correctly.
+if (!empty($segments)) {
+    $langCandidate = strtolower($segments[0]);
+    if (in_array($langCandidate, $supportedLangs, true) && isset($segments[1])) {
+        $allowedRoots = ['assets'];
+        $assetRoot = realpath(__DIR__ . '/assets');
+        $requestedRoot = $segments[1];
+
+        if (in_array($requestedRoot, $allowedRoots, true) && $assetRoot) {
+            $localizedPath = '/' . implode('/', array_slice($segments, 1));
+            $absoluteLocalizedPath = realpath(__DIR__ . $localizedPath);
+
+            if (
+                $absoluteLocalizedPath &&
+                strncmp($absoluteLocalizedPath, $assetRoot, strlen($assetRoot)) === 0 &&
+                is_file($absoluteLocalizedPath)
+            ) {
+                if (!headers_sent()) {
+                    $mimeType = 'application/octet-stream';
+                    if (function_exists('mime_content_type')) {
+                        $detected = mime_content_type($absoluteLocalizedPath);
+                        if ($detected) {
+                            $mimeType = $detected;
+                        }
+                    } elseif (class_exists('finfo')) {
+                        $finfo = new finfo(FILEINFO_MIME_TYPE);
+                        $detected = $finfo->file($absoluteLocalizedPath);
+                        if ($detected) {
+                            $mimeType = $detected;
+                        }
+                    }
+                    header('Content-Type: ' . $mimeType);
+                }
+                readfile($absoluteLocalizedPath);
+                return true;
+            }
+        }
+    }
+}
+
 if (!$segments) {
     header("Location: /{$defaultLang}/", true, 302);
     exit;
