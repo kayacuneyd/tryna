@@ -36,14 +36,14 @@ $translations = [
     ],
     'about' => [
         'title' => 'About Me',
-        'intro' => 'Berlin-based freelance photographer crafting cinematic visuals for brands and people.',
+        'intro' => 'Mülheim an der Ruhr-based freelance photographer crafting cinematic visuals for brands and people.',
     ],
     'brand' => [
         'logo' => 'ET Photography',
         'name' => 'Enes Türkoğlu Photography',
     ],
     'home' => [
-        'location_badge' => 'Berlin / Worldwide',
+        'location_badge' => 'Mülheim an der Ruhr / Worldwide',
         'case_badge' => 'Case Studies',
         'case_title' => 'Selected Work',
         'view_all' => 'View all',

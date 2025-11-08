@@ -36,14 +36,14 @@ $translations = [
     ],
     'about' => [
         'title' => 'Hakkımda',
-        'intro' => 'Berlin merkezli freelance fotoğrafçı Enes Türkoğlu, markalar ve bireyler için sinematik hikayeler yaratıyor.',
+        'intro' => 'Mülheim an der Ruhr merkezli freelance fotoğrafçı Enes Türkoğlu, markalar ve bireyler için sinematik hikayeler yaratıyor.',
     ],
     'brand' => [
         'logo' => 'ET Photography',
         'name' => 'Enes Türkoğlu Photography',
     ],
     'home' => [
-        'location_badge' => 'Berlin / Dünya genelinde',
+        'location_badge' => 'Mülheim an der Ruhr / Dünya genelinde',
         'case_badge' => 'Vaka Çalışmaları',
         'case_title' => 'Seçilmiş Çalışmalar',
         'view_all' => 'Tümünü gör',

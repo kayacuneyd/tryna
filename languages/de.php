@@ -36,14 +36,14 @@ $translations = [
     ],
     'about' => [
         'title' => 'Über Mich',
-        'intro' => 'Freiberuflicher Fotograf aus Berlin mit Fokus auf klare, moderne Bildwelten.',
+        'intro' => 'Freiberuflicher Fotograf aus Mülheim an der Ruhr mit Fokus auf klare, moderne Bildwelten.',
     ],
     'brand' => [
         'logo' => 'ET Photography',
         'name' => 'Enes Türkoğlu Photography',
     ],
     'home' => [
-        'location_badge' => 'Berlin / Weltweit',
+        'location_badge' => 'Mülheim an der Ruhr / Weltweit',
         'case_badge' => 'Fallstudien',
         'case_title' => 'Ausgewählte Arbeiten',
         'view_all' => 'Alle ansehen',
